@@ -117,16 +117,23 @@ io.use(
   async (socket, next) => {
     try {
       const rawCookie =
-        socket.handshake.headers.cookie || "";
-
-      const tokenMatch =
-        rawCookie.match(
-          /(?:^|;\s*)token=([^;]+)/
-        );
-
-      const token = tokenMatch
-        ? decodeURIComponent(tokenMatch[1])
+      socket.handshake.headers.cookie || "";
+    
+    const tokenMatch =
+      rawCookie.match(
+        /(?:^|;\s*)token=([^;]+)/
+      );
+    
+    const cookieToken = tokenMatch
+      ? decodeURIComponent(tokenMatch[1])
+      : "";
+    
+    const authToken =
+      typeof socket.handshake.auth?.token === "string"
+        ? socket.handshake.auth.token
         : "";
+    
+    const token = authToken || cookieToken;
 
       // ------------------------------------------------
       // Token missing

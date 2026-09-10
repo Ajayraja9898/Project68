@@ -59,11 +59,19 @@ let socket: Socket | null = null;
 
 export function getSocket(): Socket {
   if (!socket) {
-    socket = io(SOCKET_URL, {
-      autoConnect: false,
-      transports: ["websocket", "polling"],
-      withCredentials: true,
-    });
+    const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("token") || ""
+      : "";
+  
+  socket = io(SOCKET_URL, {
+    autoConnect: false,
+    transports: ["websocket", "polling"],
+    withCredentials: true,
+    auth: {
+      token,
+    },
+  });
 
     socket.on("connect", () => {
       console.log("🟢 SOCKET CONNECTED:", socket?.id);
