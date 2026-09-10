@@ -1,5 +1,13 @@
 import { API_URL } from "@/lib/api";
 
+function getToken(): string {
+  if (typeof window === "undefined") {
+    return "";
+  }
+
+  return localStorage.getItem("token") || "";
+}
+
 // ======================================================
 // SAFE RESPONSE PARSER
 // ======================================================
@@ -50,10 +58,11 @@ export async function getMessages(chatId: string) {
 
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
         },
-
+        
         credentials: "include",
-
+        
         cache: "no-store",
       }
     );
@@ -119,8 +128,9 @@ export async function sendMessage(
 
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
         },
-
+        
         credentials: "include",
 
         body: JSON.stringify({
